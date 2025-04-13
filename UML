@@ -1,0 +1,110 @@
+    class BillController {
+        -BillService billService
+        +calculateBill(BillRequest) : ResponseEntity<CalculationResult>
+    }
+
+    class AuthController {
+        -AuthenticationManager authManager
+        -JwtTokenProvider tokenProvider
+        +authenticateUser(AuthRequest) : ResponseEntity<AuthResponse>
+    }
+
+    class BillService {
+        <<interface>>
+        +calculateFinalAmount(Bill) : CalculationResult
+    }
+
+    class BillServiceImpl {
+        -DiscountService discountService
+        -CurrencyExchangeService exchangeService
+        +calculateFinalAmount(Bill) : CalculationResult
+    }
+
+    class DiscountService {
+        <<interface>>
+        +calculateDiscount(Bill) : BigDecimal
+    }
+
+    class DiscountServiceImpl {
+        +calculateDiscount(Bill) : BigDecimal
+        -calculatePercentageDiscount(Bill) : BigDecimal
+        -getDiscountRate(UserType, int) : BigDecimal
+        -calculateAmountDiscount(BigDecimal) : BigDecimal
+    }
+
+    class CurrencyExchangeService {
+        <<interface>>
+        +getExchangeRate(String, String) : BigDecimal
+    }
+
+    class CurrencyExchangeServiceImpl {
+        -RestTemplate restTemplate
+        -ObjectMapper objectMapper
+        -String apiKey
+        -String apiUrl
+        +getExchangeRate(String, String) : BigDecimal
+    }
+
+    class Bill {
+        -List<Item> items
+        -UserType userType
+        -int customerTenureYears
+        -String originalCurrency
+        -String targetCurrency
+        +getTotalAmount() : BigDecimal
+        +getGroceryAmount() : BigDecimal
+        +getNonGroceryAmount() : BigDecimal
+    }
+
+    class Item {
+        -String name
+        -String category
+        -BigDecimal price
+        -int quantity
+        +isGrocery() : boolean
+        +getTotalPrice() : BigDecimal
+    }
+
+    class CalculationResult {
+        -BigDecimal originalAmount
+        -String originalCurrency
+        -BigDecimal discountedAmount
+        -BigDecimal finalAmount
+        -String targetCurrency
+        -BigDecimal exchangeRate
+        -BigDecimal totalDiscount
+    }
+
+    class UserType {
+        <<enumeration>>
+        EMPLOYEE
+        AFFILIATE
+        CUSTOMER
+    }
+
+    class JwtTokenProvider {
+        -Key key
+        -long jwtExpirationMs
+        +generateToken(Authentication) : String
+        +getUsernameFromToken(String) : String
+        +validateToken(String, UserDetails) : boolean
+    }
+
+    class JwtAuthenticationFilter {
+        -JwtTokenProvider tokenProvider
+        -UserDetailsService userDetailsService
+        +doFilterInternal(HttpServletRequest, HttpServletResponse, FilterChain) : void
+    }
+
+    BillController --> BillService
+    BillServiceImpl ..|> BillService
+    BillServiceImpl --> DiscountService
+    BillServiceImpl --> CurrencyExchangeService
+    DiscountServiceImpl ..|> DiscountService
+    CurrencyExchangeServiceImpl ..|> CurrencyExchangeService
+    BillService --> Bill
+    BillService --> CalculationResult
+    Bill --> Item
+    Bill --> UserType
+    AuthController --> JwtTokenProvider
+    JwtAuthenticationFilter --> JwtTokenProvider
