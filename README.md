@@ -14,7 +14,7 @@ This Spring Boot application integrates with a third-party currency exchange API
 
 - Java 17
 - Maven 3.9.2 or higher
-- An API key from Open Exchange Rates (https://openexchangerates.org/)(setup of testing is already done)
+- An API key from Open Exchange Rates ([https://openexchangerates.org/](https://open.er-api.com/v6/latest/{base_currency}) (setup of testing is already done)
 
 ## Setup and Execution
 
