@@ -63,3 +63,11 @@ Response Body:
    "exchangeRate": 1,
    "totalDiscount": 0.00
    }
+
+
+## Test + Static Code analysis
+
+1. Execute build-and-test.sh script
+2. Jacoco Static Code analysis report will be generated 
+3. Report Path:target\site\jacoco\index.html
+4. Console Will show Test case results as well
